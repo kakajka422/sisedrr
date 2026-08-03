@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRONCHIK — проекты</title>
+<meta name="description" content="ironchik.co.za — площадка проектов. AI-сервис, эксперименты и разработки.">
+<style>
+  :root{
+    --bg:#07090d;
+    --bg-2:#0c1017;
+    --card:#0f141d;
+    --line:#1c2430;
+    --txt:#e6edf5;
+    --muted:#8593a6;
+    --accent:#00e5c3;
+    --accent-2:#5b8cff;
+    --glow:0 0 40px rgba(0,229,195,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  /* animated grid backdrop */
+  .bg-grid{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(circle at 20% 10%,rgba(0,229,195,.10),transparent 45%),
+      radial-gradient(circle at 85% 80%,rgba(91,140,255,.12),transparent 45%),
+      var(--bg);
+  }
+  .bg-lines{
+    position:fixed;inset:0;z-index:-1;opacity:.35;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);
+    mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:10;
+    backdrop-filter:blur(12px);
+    background:rgba(7,9,13,.7);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:2px;font-size:18px}
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:var(--glow)}
+  .navlinks{display:flex;gap:26px;font-size:14px}
+  .navlinks a{color:var(--muted);text-decoration:none;transition:.2s}
+  .navlinks a:hover{color:var(--accent)}
+
+  /* HERO */
+  header{padding:120px 0 90px;text-align:center;position:relative}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px;border:1px solid var(--line);border-radius:100px;
+    font-size:13px;color:var(--muted);margin-bottom:28px;
+    background:var(--bg-2);
+  }
+  .badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);
+    animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,195,.6)}
+    50%{opacity:.6;box-shadow:0 0 0 8px rgba(0,229,195,0)}}
+  header h1{
+    font-size:clamp(42px,8vw,84px);line-height:1.02;font-weight:900;letter-spacing:-2px;
+    background:linear-gradient(120deg,#fff 20%,var(--accent) 60%,var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  header p{max-width:620px;margin:24px auto 0;color:var(--muted);font-size:19px}
+  .cta{margin-top:40px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;
+    transition:.25s;display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn-primary{background:var(--accent);color:#04211d;box-shadow:var(--glow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 55px rgba(0,229,195,.45)}
+  .btn-ghost{border:1px solid var(--line);color:var(--txt)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* SECTION TITLE */
+  .sec{padding:70px 0}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:10px}
+  .sec-head h2{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .sec-head span{color:var(--muted);font-size:14px;font-family:ui-monospace,monospace}
+
+  /* PROJECTS GRID */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+  .card{
+    position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:28px;text-decoration:none;color:inherit;transition:.28s;overflow:hidden;
+    display:flex;flex-direction:column;min-height:230px;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;border-radius:18px;padding:1px;
+    background:linear-gradient(135deg,var(--accent),transparent 40%,transparent 60%,var(--accent-2));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.28s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:transparent}
+  .card:hover::before{opacity:1}
+  .card .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+    font-size:26px;background:linear-gradient(135deg,rgba(0,229,195,.15),rgba(91,140,255,.15));
+    border:1px solid var(--line);margin-bottom:20px}
+  .card h3{font-size:21px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .card p{color:var(--muted);font-size:15px;flex:1}
+  .tag{display:inline-block;margin-top:18px;font-size:12px;font-family:ui-monospace,monospace;
+    color:var(--accent);border:1px solid var(--line);padding:4px 10px;border-radius:8px;width:fit-content}
+  .status-live{color:var(--accent)}
+  .status-soon{color:var(--muted)}
+  .arrow{margin-left:auto;color:var(--muted);transition:.25s}
+  .card:hover .arrow{color:var(--accent);transform:translateX(4px)}
+  .card.soon{opacity:.72}
+  .card.soon:hover{transform:none}
+
+  /* ABOUT */
+  .about{background:var(--bg-2);border:1px solid var(--line);border-radius:22px;padding:48px;text-align:center}
+  .about h2{font-size:28px;font-weight:800;margin-bottom:14px}
+  .about p{color:var(--muted);max-width:640px;margin:0 auto;font-size:17px}
+  .stats{display:flex;gap:48px;justify-content:center;margin-top:38px;flex-wrap:wrap}
+  .stat b{display:block;font-size:34px;color:var(--accent);font-weight:900}
+  .stat span{color:var(--muted);font-size:14px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);margin-top:70px;padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer a{color:var(--accent);text-decoration:none}
+
+  @media(max-width:640px){
+    header{padding:80px 0 60px}
+    .about{padding:32px 22px}
+    .stats{gap:28px}
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-lines"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>IRONCHIK</div>
+    <div class="navlinks">
+      <a href="#projects">Проекты</a>
+      <a href="#about">О площадке</a>
+      <a href="https://ai.ironchik.co.za">AI</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="badge"><span class="pulse"></span>ironchik.co.za · площадка проектов</div>
+    <h1>Проекты<br>ironchik</h1>
+    <p>Личная площадка для экспериментов и рабочих сервисов. Здесь живут проекты — от нейросетей до утилит.</p>
+    <div class="cta">
+      <a href="https://ai.ironchik.co.za" class="btn btn-primary">Открыть AI-сервис →</a>
+      <a href="#projects" class="btn btn-ghost">Все проекты</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Проекты</h2>
+      <span>// 02 активных</span>
+    </div>
+    <div class="grid">
+
+      <a href="https://ai.ironchik.co.za" class="card">
+        <div class="ico">🧠</div>
+        <h3>AI-сервис <span class="arrow">↗</span></h3>
+        <p>Сайт с нейросетью — генерация, диалог и работа с ИИ прямо в браузере. Первый и основной проект площадки.</p>
+        <span class="tag status-live">● LIVE · ai.ironchik.co.za</span>
+      </a>
+
+      <a href="GPPos-v10e.iso" download class="card">
+        <div class="ico">💿</div>
+        <h3>GPPos <span class="arrow">⤓</span></h3>
+        <p>Giga Performance Platform OS — собственная операционная система. Собранный образ доступен для скачивания и записи на носитель.</p>
+        <span class="tag status-live">● LIVE · GPPos-v10e.iso · скачать</span>
+      </a>
+
+      <div class="card soon">
+        <div class="ico">✦</div>
+        <h3>Место под идею</h3>
+        <p>Слот для будущего проекта. Идей много — реализуем по очереди.</p>
+        <span class="tag status-soon">○ SOON</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="about">
+  <div class="wrap">
+    <div class="about">
+      <h2>О площадке</h2>
+      <p>ironchik.co.za — это хаб, где собраны мои проекты в одном месте. Каждый проект живёт на своём поддомене, а эта страница — точка входа ко всему сразу.</p>
+      <div class="stats">
+        <div class="stat"><b>2</b><span>активных проекта</span></div>
+        <div class="stat"><b>∞</b><span>идей в очереди</span></div>
+        <div class="stat"><b>AI</b><span>основной фокус</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © 2026 IRONCHIK · <a href="https://ironchik.co.za">ironchik.co.za</a> · <a href="https://ai.ironchik.co.za">ai.ironchik.co.za</a>
+  </div>
+</footer>
+
+</body>
+</html>
