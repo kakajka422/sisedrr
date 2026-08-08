@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DodgerNeon — игра</title>
+<meta name="description" content="DodgerNeon — аркадная неоновая игра. Скачать версии игры для Windows.">
+<style>
+  :root{
+    --bg:#07090d;--bg-2:#0c1017;--card:#0f141d;--line:#1c2430;
+    --txt:#e6edf5;--muted:#8593a6;--accent:#00e5c3;--accent-2:#5b8cff;
+    --glow:0 0 40px rgba(0,229,195,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;line-height:1.6;overflow-x:hidden}
+  .bg-grid{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(circle at 20% 10%,rgba(0,229,195,.10),transparent 45%),
+    radial-gradient(circle at 85% 80%,rgba(91,140,255,.12),transparent 45%),var(--bg)}
+  .bg-lines{position:fixed;inset:0;z-index:-1;opacity:.35;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);
+    mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:rgba(7,9,13,.7);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:2px;font-size:18px;text-decoration:none;color:var(--txt)}
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:var(--glow)}
+  .back{color:var(--muted);text-decoration:none;font-size:14px;transition:.2s}
+  .back:hover{color:var(--accent)}
+
+  header{padding:80px 0 40px}
+  .crumb{color:var(--muted);font-size:13px;font-family:ui-monospace,monospace;margin-bottom:20px}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--accent)}
+  .head-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .os-ico{width:78px;height:78px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:40px;
+    background:linear-gradient(135deg,rgba(0,229,195,.18),rgba(91,140,255,.18));border:1px solid var(--line)}
+  header h1{font-size:clamp(34px,7vw,56px);font-weight:900;letter-spacing:-1.5px;
+    background:linear-gradient(120deg,#fff 20%,var(--accent) 65%,var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  header .sub{color:var(--muted);font-size:18px;margin-top:6px}
+
+  .dl-card{margin-top:44px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .dl-card::after{content:"";position:absolute;top:-40%;right:-10%;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle,rgba(0,229,195,.15),transparent 70%);pointer-events:none}
+  .dl-info h2{font-size:22px;font-weight:800;margin-bottom:6px}
+  .dl-meta{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-family:ui-monospace,monospace;margin-top:10px}
+  .dl-meta b{color:var(--accent);font-weight:600}
+  .btn{padding:16px 34px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;transition:.25s;
+    display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#04211d;box-shadow:var(--glow);white-space:nowrap}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 55px rgba(0,229,195,.45)}
+
+  .sec{padding:56px 0 0}
+  .sec h3{font-size:22px;font-weight:800;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+  .sec h3::before{content:"";width:6px;height:22px;border-radius:4px;background:var(--accent)}
+
+  .upd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-bottom:16px;transition:.25s}
+  .upd:hover{border-color:var(--accent-2)}
+  .upd-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .ver{font-family:ui-monospace,monospace;font-weight:700;font-size:16px}
+  .pill{font-size:11px;font-family:ui-monospace,monospace;padding:3px 10px;border-radius:20px;border:1px solid var(--line)}
+  .pill.latest{color:#04211d;background:var(--accent);border-color:var(--accent)}
+  .pill.old{color:var(--muted)}
+  .date{margin-left:auto;color:var(--muted);font-size:13px;font-family:ui-monospace,monospace}
+  .upd ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .upd li{color:var(--muted);font-size:15px;padding-left:22px;position:relative}
+  .upd li::before{content:"▹";position:absolute;left:0;color:var(--accent)}
+
+  .vlist{display:flex;flex-direction:column;gap:10px}
+  .vrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;transition:.2s}
+  .vrow:hover{border-color:var(--accent-2)}
+  .vname{font-family:ui-monospace,monospace;font-weight:700;font-size:15px}
+  .dbtn{margin-left:auto;text-decoration:none;font-weight:700;font-size:14px;padding:9px 18px;border-radius:10px;
+    background:var(--accent);color:#04211d;transition:.2s;white-space:nowrap}
+  .dbtn:hover{transform:translateY(-1px);box-shadow:var(--glow)}
+  .dbtn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);padding:9px 14px}
+  .dbtn.ghost:hover{border-color:var(--accent);color:var(--accent);box-shadow:none}
+
+  .specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+  .spec{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .spec span{color:var(--muted);font-size:13px;font-family:ui-monospace,monospace}
+  .spec b{display:block;font-size:17px;margin-top:4px}
+
+  .note{margin-top:26px;background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:20px 24px;color:var(--muted);font-size:14px}
+  .note b{color:var(--txt)}
+
+  footer{border-top:1px solid var(--line);margin-top:70px;padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer a{color:var(--accent);text-decoration:none}
+
+  @media(max-width:640px){header{padding:56px 0 30px}.dl-card{padding:26px}.btn{width:100%;justify-content:center}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-lines"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="logo"><span class="dot"></span>IRONCHIK</a>
+    <a href="index.html" class="back">← Все проекты</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">ironchik</a> / projects / dodgerneon</div>
+    <div class="head-row">
+      <div class="os-ico">🎮</div>
+      <div>
+        <h1>DodgerNeon</h1>
+        <div class="sub">Аркадная неоновая игра для Windows</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- DOWNLOAD -->
+  <div class="dl-card">
+    <div class="dl-info">
+      <h2>Скачать актуальную версию</h2>
+      <div class="dl-meta">
+        <span>Версия: <b>Neon</b></span>
+        <span>Файл: <b>DodgerNeon.exe</b></span>
+        <span>Платформа: <b>Windows</b></span>
+      </div>
+    </div>
+    <a href="DodgerNeon.exe" download class="btn">⤓ Скачать игру</a>
+  </div>
+
+  <!-- LATEST -->
+  <section class="sec">
+    <h3>Последнее обновление</h3>
+    <div class="upd">
+      <div class="upd-top">
+        <span class="ver">DodgerNeon</span>
+        <span class="pill latest">АКТУАЛЬНАЯ</span>
+        <span class="date">текущая версия</span>
+      </div>
+      <ul>
+        <li>Неоновый визуальный стиль</li>
+        <li>Обновлённый геймплей и баланс</li>
+        <li>Рекомендуемая версия для игры</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ALL VERSIONS -->
+  <section class="sec">
+    <h3>Все версии</h3>
+    <div class="vlist">
+      <div class="vrow"><span class="vname">DodgerNeon</span><span class="pill latest">актуальная</span><a class="dbtn" href="DodgerNeon.exe" download>⤓ Скачать</a></div>
+      <div class="vrow"><span class="vname">Dodger</span><span class="pill old">оригинал</span><a class="dbtn ghost" href="Dodger.exe" download>⤓</a></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="sec">
+    <h3>Об игре</h3>
+    <div class="specs">
+      <div class="spec"><span>название</span><b>DodgerNeon</b></div>
+      <div class="spec"><span>жанр</span><b>Аркада</b></div>
+      <div class="spec"><span>платформа</span><b>Windows</b></div>
+      <div class="spec"><span>статус</span><b>активна</b></div>
+    </div>
+    <div class="note">
+      <b>Как запустить:</b> скачай <b>.exe</b> и запусти его на Windows. Если система предупреждает о неизвестном
+      издателе — выбери «Подробнее» → «Выполнить в любом случае».
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    © 2026 IRONCHIK · <a href="index.html">← назад к проектам</a> · <a href="https://ironchik.co.za">ironchik.co.za</a>
+  </div>
+</footer>
+
+</body>
+</html>
